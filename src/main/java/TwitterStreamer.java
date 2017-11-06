@@ -1,12 +1,14 @@
 import twitter4j.*;
 import twitter4j.conf.ConfigurationBuilder;
+
+import java.io.IOException;
 //import twitter4j.TwitterStream;
 
 
-public final class TwitterStreamer {
+public class TwitterStreamer {
 
 
-    public static void main(String[] args) throws TwitterException {
+    public static void main(String[] args) throws TwitterException, IOException {
 
 
 
@@ -15,52 +17,75 @@ public final class TwitterStreamer {
         String accessToken = "926422936826863616-ljuZgL3wtXOBipuY2KDPQ8ezULbInTJ";
         String accessTokenSecret = "GgPHDzba3R7cYZXpbTCkdB2aeVT8BY0JUnY3tnEw0OwbP";
 
-       TwitterStream twitterStream;
-
-
-
         ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
         configurationBuilder.setOAuthConsumerKey(consumerKey)
                 .setOAuthConsumerSecret(consumerSecret)
                 .setOAuthAccessToken(accessToken)
                 .setOAuthAccessTokenSecret(accessTokenSecret);
-        twitterStream = new TwitterStreamFactory(configurationBuilder.build()).getInstance();
+
+
+
+
+
 
         StatusListener listener = new StatusListener() {
-            //@Override
+            @Override
             public void onStatus(Status status) {
                 System.out.println("@" + status.getUser().getScreenName() + " - " + status.getText());
+
             }
 
-            //@Override
+            @Override
             public void onDeletionNotice(StatusDeletionNotice statusDeletionNotice) {
                 System.out.println("Got a status deletion notice id:" + statusDeletionNotice.getStatusId());
             }
 
-            //@Override
+            @Override
             public void onTrackLimitationNotice(int numberOfLimitedStatuses) {
                 System.out.println("Got track limitation notice:" + numberOfLimitedStatuses);
             }
 
-            //@Override
+            @Override
             public void onScrubGeo(long userId, long upToStatusId) {
                 System.out.println("Got scrub_geo event userId:" + userId + " upToStatusId:" + upToStatusId);
             }
 
-            //@Override
+            @Override
             public void onStallWarning(StallWarning warning) {
                 System.out.println("Got stall warning:" + warning);
             }
 
-            //@Override
+            @Override
             public void onException(Exception ex) {
                 ex.printStackTrace();
             }
         };
 
+        TwitterStream twitterStream = new TwitterStreamFactory(configurationBuilder.build()).getInstance();
 
+
+
+
+
+        //twitterStream.shutdown();
         twitterStream.addListener(listener);
         twitterStream.sample();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
