@@ -1,4 +1,3 @@
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import edu.stanford.nlp.ie.AbstractSequenceClassifier;
 import edu.stanford.nlp.ie.crf.CRFClassifier;
 import edu.stanford.nlp.ling.CoreAnnotations;
@@ -7,9 +6,7 @@ import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.sentiment.SentimentCoreAnnotations;
 import edu.stanford.nlp.util.CoreMap;
-import edu.stanford.nlp.util.Triple;
 import org.apache.tika.language.LanguageIdentifier;
-import org.omg.CosNaming.NamingContextExtPackage.StringNameHelper;
 
 import java.io.IOException;
 import java.util.List;
@@ -35,10 +32,10 @@ public class LanguageDetectorAPI {
         StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
 
         // read some text in the text variable
-        //String text = "...";
+        String text1 = " This World is an amazing place";
 
         // create an empty Annotation just with the given text
-        Annotation document = new Annotation(txt);
+        Annotation document = new Annotation(text1);
 
         // run all Annotators on this text
         pipeline.annotate(document);
@@ -73,13 +70,13 @@ public class LanguageDetectorAPI {
                 }
                 else {
                     if(!prevLabel.equals("O"))
-                        System.out.println(s.trim());
+                        System.out.println("Inside entity is: "+s.trim());
                     s = " " + word;
                     prevLabel = word.get(CoreAnnotations.AnswerAnnotation.class);
                 }
             }
             if(!prevLabel.equals("O"))
-                System.out.println(s);
+                System.out.println("Outside entity: "+s);
         }
 
 

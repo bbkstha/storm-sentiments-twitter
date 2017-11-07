@@ -32,7 +32,7 @@ public class LanguageDetectorBolt extends BaseRichBolt {
         collector = outputCollector;
 
         try {
-            writer = new PrintWriter("/home/bbkstha/Desktop/pa2log/log100.txt", "UTF-8");
+            writer = new PrintWriter("/home/bbkstha/Desktop/pa2log/log2.txt", "UTF-8");
         } catch (FileNotFoundException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         } catch (UnsupportedEncodingException e) {

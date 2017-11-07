@@ -15,12 +15,17 @@ public class LoggerBolt extends BaseRichBolt {
     PrintWriter writer;
     int count = 0;
     private OutputCollector collector;
+    private String fileName;
+
+    public LoggerBolt(String filename){
+        this.fileName = filename;
+    }
 
     //@Override
     public void prepare(Map conf, TopologyContext context, OutputCollector outputCollector) {
         collector = outputCollector;
         try {
-            writer = new PrintWriter("/home/bbkstha/Desktop/pa2log/log.txt", "UTF-8");
+            writer = new PrintWriter(fileName, "UTF-8");
         } catch (FileNotFoundException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         } catch (UnsupportedEncodingException e) {
@@ -30,8 +35,12 @@ public class LoggerBolt extends BaseRichBolt {
 
     //@Override
     public void execute(Tuple tuple) {
-        String txt = tuple.getStringByField("englishtweet");
-        writer.println((count++)+":"+txt);
+        String timestamp = tuple.getStringByField("timestamp");
+        String entity = tuple.getStringByField("entitiy");
+        Integer sentiment = tuple.getIntegerByField("sentiment");
+        writer.print(timestamp);
+        writer.print(entity);
+        writer.print(sentiment);
         writer.flush();
         // Confirm that this tuple has been treated.
         collector.ack(tuple);

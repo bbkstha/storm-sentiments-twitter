@@ -57,7 +57,7 @@ public class TwitterStreammingSpout extends BaseRichSpout {
             twitterStream = new TwitterStreamFactory(configurationBuilder.build()).getInstance();
 
         try {
-            writer = new PrintWriter("/home/bbkstha/Desktop/pa2log/log10.txt", "UTF-8");
+            writer = new PrintWriter("/home/bbkstha/Desktop/pa2log/log1.txt", "UTF-8");
         } catch (FileNotFoundException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         } catch (UnsupportedEncodingException e) {
