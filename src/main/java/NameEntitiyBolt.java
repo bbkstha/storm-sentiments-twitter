@@ -78,9 +78,9 @@ public class NameEntitiyBolt extends BaseRichBolt {
                 else {
                     if(!prevLabel.equals("O")){
                     // System.out.println(s.trim());
-                        writer.println((count++)+":"+s.trim()+" and sentiment is: "+sentiment);
+                       // writer.println((count++)+":"+s.trim()+" and sentiment is: "+sentiment);
 
-                        writer.flush();
+                       // writer.flush();
                         //System.out.println(lang.get().toString());
                         collector.emit(new Values(s , sentiment));
 
@@ -102,7 +102,7 @@ public class NameEntitiyBolt extends BaseRichBolt {
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
-        declarer.declare(new Fields("nameentitiy", "sentiment"));
+        declarer.declare(new Fields("entity", "sentiment"));
     }
 
     public void cleanup() {

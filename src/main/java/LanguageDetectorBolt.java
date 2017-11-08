@@ -53,8 +53,8 @@ public class LanguageDetectorBolt extends BaseRichBolt {
 
             if(lang.matches("en")) {
 
-                writer.println((count++)+":"+text+" and language is: "+lang);
-                writer.flush();
+                //writer.println((count++)+":"+text+" and language is: "+lang);
+                //writer.flush();
                 //System.out.println(lang.get().toString());
                 collector.emit(new Values(text));
                 collector.ack(tuple);

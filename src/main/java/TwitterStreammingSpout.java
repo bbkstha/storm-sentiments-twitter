@@ -67,8 +67,8 @@ public class TwitterStreammingSpout extends BaseRichSpout {
             StatusListener listener = new StatusListener() {
                 @Override
                 public void onStatus(Status status) {
-                    writer.println((count++)+":"+status.getText());
-                    writer.flush();
+                    //writer.println((count++)+":"+status.getText());
+                    //writer.flush();
                     //System.out.println("@" + status.getUser().getScreenName() + " - " + status.getText());
                     statusHolder.offer(status.getText());
 

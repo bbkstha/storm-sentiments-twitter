@@ -92,8 +92,8 @@ public class SentimentBolt extends BaseRichBolt{
 
         int avgScore = totalScore/sentenceCount;
         //    System.out.println(sentiment);
-        writer.println((count++)+":"+txt+" and sentiment is: "+avgScore);
-        writer.flush();
+        //writer.println((count++)+":"+txt+" and sentiment is: "+avgScore);
+        //writer.flush();
         //System.out.println(lang.get().toString());
         collector.emit(new Values(txt , avgScore));
         collector.ack(tuple);

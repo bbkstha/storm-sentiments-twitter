@@ -5,7 +5,7 @@ import org.apache.storm.topology.base.BaseRichBolt;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
-import resources.TempObject;
+
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -13,6 +13,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
 
 public class LossycountBolt extends BaseRichBolt{
 
@@ -35,14 +36,14 @@ public class LossycountBolt extends BaseRichBolt{
 
     }
 
+
     @Override
-    public void prepare(Map config, TopologyContext context,
-                        OutputCollector outputCollector) {
+    public void prepare(Map config, TopologyContext context, OutputCollector outputCollector) {
         collector = outputCollector;
         counts = new HashMap<String, Long>();
         totalElements=0;
         try {
-            writer = new PrintWriter("/home/bbkstha/Desktop/pa2log/log6.txt", "UTF-8");
+            writer = new PrintWriter("/home/bbkstha/Desktop/pa2log/lossycount.txt", "UTF-8");
         } catch (FileNotFoundException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         } catch (UnsupportedEncodingException e) {
@@ -52,30 +53,36 @@ public class LossycountBolt extends BaseRichBolt{
 
     @Override
     public void execute(Tuple tuple) {
-        String receivedEntity = tuple.getString(0);
-        Integer sentimentScore = tuple.getIntegerByField("sentiment");
-        totalElements++;
-        LossyCountImpl(receivedEntity, sentimentScore);
-        collector.ack(tuple);
+
+            String receivedEntity = tuple.getStringByField("entity");
+            Integer sentimentScore = tuple.getIntegerByField("sentiment");
+            totalElements++;
+            LossyCountImpl(receivedEntity, sentimentScore);
+            collector.ack(tuple);
+
+
     }
+
+
+
 
 
     public void LossyCountImpl(String entity, Integer sentimentScore)
     {
         if(totalEntities < bucketWidth) {
-            if(!bucket.containsKey(entity.toLowerCase())) {
+            if(!bucket.containsKey(entity)) {
                 TempObject tempObj = new TempObject();
                 tempObj.delta = bucketNumber -1;
                 tempObj.count = 1;
                 tempObj.sentimentScore+=sentimentScore;
                 tempObj.entity = entity;
-                bucket.put(entity.toLowerCase(), tempObj);
+                bucket.put(entity, tempObj);
             }
             else {
                 TempObject tempObj = bucket.get(entity);
                 tempObj.count+=1;
                 tempObj.sentimentScore+=sentimentScore;
-                bucket.put(entity.toLowerCase(), tempObj);
+                bucket.put(entity, tempObj);
             }
             totalEntities +=1;
         }
@@ -85,10 +92,10 @@ public class LossycountBolt extends BaseRichBolt{
                 TempObject tempObject = bucket.get(ent);
                 //condition if required
                 if(tempObject.count >= sminuse*totalElements) {
-                    writer.println((count++)+":"+ent+" and running sentiment is: "+tempObject.sentimentScore+" actual count is"+tempObject.count+" and approx. is:"+tempObject.count+tempObject.delta);
+                    //writer.println((count++)+":"+ent+" and running sentiment is: "+tempObject.sentimentScore+" actual count is"+tempObject.count+" and approx. is:"+tempObject.count+tempObject.delta);
 
-                    writer.flush();
-                    collector.emit(new Values(ent, ((int)Math.ceil(tempObject.sentimentScore/(float)tempObject.count)), tempObject.count + tempObject.delta));
+                    //writer.flush();
+                    collector.emit(new Values(ent, sentimentScore,tempObject.count + tempObject.delta));//((int)Math.ceil(tempObject.sentimentScore/(float)tempObject.count)), tempObject.count + tempObject.delta));
 
                 }
             }
@@ -111,7 +118,7 @@ public class LossycountBolt extends BaseRichBolt{
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
-        declarer.declare(new Fields("entity", "sentiment","approximateFrequency"));
+        declarer.declare(new Fields("entity", "sentiment","lossycount"));
     }
 
     public void cleanup() {
