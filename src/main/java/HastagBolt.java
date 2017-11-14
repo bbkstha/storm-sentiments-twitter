@@ -16,12 +16,12 @@ import java.util.StringTokenizer;
 public class HastagBolt extends BaseRichBolt{
 
 
-
+    private String fileName;
     PrintWriter writer;
     int count = 0;
 
-    public HastagBolt(){
-
+    public HastagBolt(String file){
+        this.fileName = file;
     }
 
     OutputCollector collector;
@@ -31,7 +31,7 @@ public class HastagBolt extends BaseRichBolt{
 
         collector = outputCollector;
         try {
-            writer = new PrintWriter("/home/bbkstha/Desktop/pa2log/log7.txt", "UTF-8");
+            writer = new PrintWriter(fileName, "UTF-8");
         } catch (FileNotFoundException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         } catch (UnsupportedEncodingException e) {
@@ -52,8 +52,8 @@ public class HastagBolt extends BaseRichBolt{
         while (stringTokenizer.hasMoreElements()) {
             String hashTagEntitiy = (String) stringTokenizer.nextElement();
             if (StringUtils.startsWith(hashTagEntitiy, "#")) {
-                //writer.println((count++)+":"+hashTagEntitiy+" and sentiment is: "+sentiment);
-                //writer.flush();
+                writer.println((count++)+":"+hashTagEntitiy+" and sentiment is: "+sentiment);
+                writer.flush();
                 collector.emit(new Values(hashTagEntitiy, sentiment));
             }
         }

@@ -24,9 +24,10 @@ public class SentimentBolt extends BaseRichBolt{
 
     PrintWriter writer;
     int count = 0;
+    private String fileName;
 
-    public SentimentBolt(){
-
+    public SentimentBolt(String file){
+        this.fileName = file;
     }
 
     OutputCollector collector;

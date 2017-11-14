@@ -30,10 +30,10 @@ public class LossycountBolt extends BaseRichBolt{
     private int totalEntities =0;
     private double sminuse=0.01f;//s=0.03 so smiu0.03-0.02
     private int totalElements;
+    private String fileName;
 
-
-    public LossycountBolt(){
-
+    public LossycountBolt(String file){
+        this.fileName = file;
     }
 
 
@@ -43,7 +43,7 @@ public class LossycountBolt extends BaseRichBolt{
         counts = new HashMap<String, Long>();
         totalElements=0;
         try {
-            writer = new PrintWriter("/home/bbkstha/Desktop/pa2log/lossycount.txt", "UTF-8");
+            writer = new PrintWriter(fileName, "UTF-8");
         } catch (FileNotFoundException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         } catch (UnsupportedEncodingException e) {
@@ -57,7 +57,7 @@ public class LossycountBolt extends BaseRichBolt{
             String receivedEntity = tuple.getStringByField("entity");
             Integer sentimentScore = tuple.getIntegerByField("sentiment");
             totalElements++;
-            LossyCountImpl(receivedEntity, sentimentScore);
+            LossyCountImpl(receivedEntity, sentimentScore, totalElements);
             collector.ack(tuple);
 
 
@@ -67,7 +67,7 @@ public class LossycountBolt extends BaseRichBolt{
 
 
 
-    public void LossyCountImpl(String entity, Integer sentimentScore)
+    public void LossyCountImpl(String entity, Integer sentimentScore, Integer totalEle)
     {
         if(totalEntities < bucketWidth) {
             if(!bucket.containsKey(entity)) {
@@ -91,10 +91,9 @@ public class LossycountBolt extends BaseRichBolt{
             for(String ent: bucket.keySet()) {
                 TempObject tempObject = bucket.get(ent);
                 //condition if required
-                if(tempObject.count >= sminuse*totalElements) {
-                    //writer.println((count++)+":"+ent+" and running sentiment is: "+tempObject.sentimentScore+" actual count is"+tempObject.count+" and approx. is:"+tempObject.count+tempObject.delta);
-
-                    //writer.flush();
+                if(tempObject.count >= 2){  //sminuse*totalEle) {
+                    writer.println((count++)+":"+ent+" and running sentiment is: "+tempObject.sentimentScore+" actual count is"+tempObject.count+" and approx. is:"+tempObject.count+tempObject.delta);
+                    writer.flush();
                     collector.emit(new Values(ent, sentimentScore,tempObject.count + tempObject.delta));//((int)Math.ceil(tempObject.sentimentScore/(float)tempObject.count)), tempObject.count + tempObject.delta));
 
                 }

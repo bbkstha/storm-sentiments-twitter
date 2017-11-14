@@ -106,15 +106,15 @@ public class LoggerBolt extends BaseRichBolt {
 
                 //LOG.debug("current queue size is " + queueSize);
 
-                if (queueSize >= batchSize) {
-
+//                if (queueSize >= batchSize) {
+//
 //                    LOG.debug("Current queue size is >= " + batchSize
 //
 //                            + " executing the batch");
-
-                    finishBatch();
-
-                }
+//
+//                    finishBatch();
+//
+//                }
 
             }
 
@@ -131,8 +131,9 @@ public class LoggerBolt extends BaseRichBolt {
         queue.drainTo(tuples);
 
         ///rank tuples based on lossycount////
-        Collections.sort(tuples, (Tuple t1, Tuple t2) -> t1.getIntegerByField("lossycount").compareTo(t2.getIntegerByField("lossycount")));
-        Collections.reverse(tuples);
+
+        //Collections.sort(tuples, (Tuple t1, Tuple t2) -> t1.getIntegerByField("lossycount").compareTo(t2.getIntegerByField("lossycount")));
+        //Collections.reverse(tuples);
 
         //BulkRequestBuilder bulkRequest = client.prepareBulk();
 
@@ -150,8 +151,9 @@ public class LoggerBolt extends BaseRichBolt {
 
             String entity = tuples.get(i).getStringByField("entity");
             Integer sentiment = tuples.get(i).getIntegerByField("sentiment");
+            Integer fre = tuples.get(i).getIntegerByField("lossycount");
             //Integer lossyCount = tuples.get(i).getIntegerByField("lossycount");
-            writer.print("<" + entity + ":" + sentiment + ">\n");
+            writer.print("<" + entity + ":" + sentiment + "> and count:" + fre +"\n");
             writer.flush();
             //break;
             // Confirm that this tuple has been treated.

@@ -21,12 +21,12 @@ import java.util.Map;
 public class NameEntitiyBolt extends BaseRichBolt {
 
 
-
+    private String fileName;
     PrintWriter writer;
     int count = 0;
 
-    public NameEntitiyBolt(){
-
+    public NameEntitiyBolt(String file){
+        this.fileName = file;
     }
 
     OutputCollector collector;
@@ -37,7 +37,7 @@ public class NameEntitiyBolt extends BaseRichBolt {
         collector = outputCollector;
 
         try {
-            writer = new PrintWriter("/home/bbkstha/Desktop/pa2log/log5.txt", "UTF-8");
+            writer = new PrintWriter(fileName, "UTF-8");
         } catch (FileNotFoundException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         } catch (UnsupportedEncodingException e) {
