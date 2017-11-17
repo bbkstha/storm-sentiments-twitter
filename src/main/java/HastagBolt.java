@@ -52,8 +52,8 @@ public class HastagBolt extends BaseRichBolt{
         while (stringTokenizer.hasMoreElements()) {
             String hashTagEntitiy = (String) stringTokenizer.nextElement();
             if (StringUtils.startsWith(hashTagEntitiy, "#")) {
-                writer.println((count++)+":"+hashTagEntitiy+" and sentiment is: "+sentiment);
-                writer.flush();
+                //writer.println((count++)+":"+hashTagEntitiy+" and sentiment is: "+sentiment);
+                //writer.flush();
                 collector.emit(new Values(hashTagEntitiy, sentiment));
             }
         }

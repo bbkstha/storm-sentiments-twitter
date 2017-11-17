@@ -50,6 +50,7 @@ public class LoggerBolt extends BaseRichBolt {
     //@Override
     public void prepare(Map conf, TopologyContext context, OutputCollector outputCollector) {
         collector = outputCollector;
+        //queue.clear();
         try {
             writer = new PrintWriter(fileName, "UTF-8");
         } catch (FileNotFoundException e) {
@@ -72,6 +73,7 @@ public class LoggerBolt extends BaseRichBolt {
 //        collector.ack(tuple);
 //    }
         public void execute(Tuple tuple) {
+
             if (isTickTuple(tuple)) {
 
                 if ((System.currentTimeMillis() / 1000 - lastBatchProcessTimeSeconds) >= batchIntervalInSec) {
@@ -81,18 +83,6 @@ public class LoggerBolt extends BaseRichBolt {
 //                            + ". But received tick tuple so executing the batch");
 
                     finishBatch();
-
-                } else {
-
-//                    LOG.debug("Current queue size is " + this.queue.size()
-//
-//                            + ". Received tick tuple but last batch was executed "
-//
-//                            + (System.currentTimeMillis() / 1000 - lastBatchProcessTimeSeconds)
-//
-//                            + " seconds back that is less than " + batchIntervalInSec
-//
-//                            + " so ignoring the tick tuple");
 
                 }
 
@@ -132,8 +122,8 @@ public class LoggerBolt extends BaseRichBolt {
 
         ///rank tuples based on lossycount////
 
-        //Collections.sort(tuples, (Tuple t1, Tuple t2) -> t1.getIntegerByField("lossycount").compareTo(t2.getIntegerByField("lossycount")));
-        //Collections.reverse(tuples);
+        Collections.sort(tuples, (Tuple t1, Tuple t2) -> t1.getIntegerByField("lossycount").compareTo(t2.getIntegerByField("lossycount")));
+        Collections.reverse(tuples);
 
         //BulkRequestBuilder bulkRequest = client.prepareBulk();
 
@@ -153,12 +143,16 @@ public class LoggerBolt extends BaseRichBolt {
             Integer sentiment = tuples.get(i).getIntegerByField("sentiment");
             Integer fre = tuples.get(i).getIntegerByField("lossycount");
             //Integer lossyCount = tuples.get(i).getIntegerByField("lossycount");
-            writer.print("<" + entity + ":" + sentiment + "> and count:" + fre +"\n");
+            writer.print("<"+entity+":"+sentiment+">");
             writer.flush();
             //break;
             // Confirm that this tuple has been treated.
-            //collector.ack(tuple);
+            collector.ack(tuples.get(i));
         }
+        //writer.print("\n");
+
+        //queue.clear();
+
     }
 //        try {
 //

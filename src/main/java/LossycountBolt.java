@@ -24,11 +24,11 @@ public class LossycountBolt extends BaseRichBolt{
     OutputCollector collector;
     private HashMap<String, Long> counts = null;
     private Map<String, TempObject> bucket = new ConcurrentHashMap<String,TempObject>();
-    private double e= 0.02f; //0.15f; //0.02f;
+    private double e= 0.002f; //0.15f; //0.02f;
     private int bucketWidth =(int) Math.ceil(1/e); //50
     private int bucketNumber =1; //starting from 1, not 0
     private int totalEntities =0;
-    private double sminuse=0.01f;//s=0.03 so smiu0.03-0.02
+    private double sminuse=0.001f;//s=0.03 so smiu0.03-0.02
     private int totalElements;
     private String fileName;
 
@@ -91,9 +91,9 @@ public class LossycountBolt extends BaseRichBolt{
             for(String ent: bucket.keySet()) {
                 TempObject tempObject = bucket.get(ent);
                 //condition if required
-                if(tempObject.count >= 2){  //sminuse*totalEle) {
-                    writer.println((count++)+":"+ent+" and running sentiment is: "+tempObject.sentimentScore+" actual count is"+tempObject.count+" and approx. is:"+tempObject.count+tempObject.delta);
-                    writer.flush();
+                if(tempObject.count >= sminuse*totalEle){  //sminuse*totalEle) {
+                    //writer.println((count++)+":"+ent+" and running sentiment is: "+tempObject.sentimentScore+" actual count is"+tempObject.count+" and approx. is:"+tempObject.count+tempObject.delta);
+                    //writer.flush();
                     collector.emit(new Values(ent, sentimentScore,tempObject.count + tempObject.delta));//((int)Math.ceil(tempObject.sentimentScore/(float)tempObject.count)), tempObject.count + tempObject.delta));
 
                 }
